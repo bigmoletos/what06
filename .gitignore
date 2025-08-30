@@ -1,0 +1,87 @@
+# Gitignore pour le dossier what06 - Évite les commits accidentels vers le repo principal
+
+# Dossiers de projets avec leurs propres repos Git
+# /Tech4Elles/
+# /cursor_optimization/
+# /cyber_protection_personnalite/
+# /projet_qualite_air/
+# /Projet2_NetFlix/
+# /projet_x_cap_ia_ethique/
+# /recherche_offre_emploi/
+# /what06/
+# /Generalisation_IA/
+# /google_map/
+# /hebergement_serveur/
+# /marseille/
+# /nfc_anycubic/
+# /plateformes_Freelance/
+# /porrtefoliolf/
+# /Projet Méteo/
+# /sauve/
+# /social_network/
+# /tests_mistral_codestral/
+# /tests_technique/
+
+# Fichiers de configuration et scripts locaux
+*.log
+*.bat
+*.ps1
+*.sh
+*.yml
+*.yaml
+*.json
+*.env
+*.env.local
+*.env.development
+*.env.production
+
+# Fichiers temporaires et de cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+
+# Environnements virtuels
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Fichiers de sauvegarde
+*.bak
+*.backup
+*.old
+*.tmp
+*.temp
+
+# Logs et fichiers de données
+logs/
+*.log
+*.sqlite
+*.db
+
+# Fichiers de configuration locaux
+config.local.*
+settings.local.*
+local.*

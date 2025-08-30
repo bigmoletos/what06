@@ -1,0 +1,144 @@
+Version initial : 31-07-2025
+Cahier des charges – Tech4Elles
+Contexte et objectifs du projet
+Tech4Elles est une plateforme visant à démocratiser l’accès à la tech pour les femmes. L’application connecte des femmes role models (marraines) avec des lycéennes pour éveiller leur intérêt et les guider dans les domaines de la tech et du numérique. Une première version est déployée et disponible sur les Stores GooglePlay et Apple Store.
+La première version permet aux lycéennes de répondre à des questions pour identifier leurs besoins et leur proposer des marraines correspondant à la carrière recherchée. Un appareillage se crée et permet des échanges dans le binôme. La marraine peut ainsi présenter son métier, accompagner les jeunes filles dans le choix d'école, aider à rédiger des lettres de motivations et cv...
+Pour l’automne 2025, l’objectif est de délivrer un certain nombre de nouvelles fonctionnalités pour répondre aux premiers points de frustrations identifiés lors de l’année scolaire 2024/2025.
+L’association éditrice du projet est WHAT06 (Women Hackers Action Tank 06), un collectif de femmes et d'hommes engagés pour la diversité dans les métiers tech à Nice et Sophia-Antipolis.Il vise à augmenter la visibilité des femmes dans la tech et à encourager les jeunes filles à y faire carrière.
+WHAT06 organise des événements (workshops, conférences, hackathons) autour des nouvelles technologies et du numérique. Depuis 2019, le collectif organise les Trophées Women In Tech Sud, qui récompensent les femmes dans la tech en région Sud Provence-Alpes-Côte-d'Azur et Monaco dans les catégories chercheuse, startuppeuse et employée. Il organise également les GirlsTechDay une journée où des collégiennes de 3eme et des lycéennes de 2nd découvrent des ateliers sur la tech pendant que les parents assistent à des conférences.
+Public cible
+Nos utilisatrices sont:
+1. Des lycéennes (en classe de première ou de terminale) curieuse de découvrir le monde de la tech
+2. Des marraines, femme de la tech qui sont prêtes à accompagner des jeunes filles sur un programme de mentoring
+3. Les membres de WHAT06, responsables du développement et de l’administration de la plateforme
+Version initial : 31-07-2025
+Périmètre du projet
+Fonctionnalités existantes
+Inscriptions, connexion et profil
+1. Inscription d’une lycéenne via un système de questions pour permettre une recommandation avec une marraine qui correspond au mieux à ses critères.
+2. Connexion (lycéenne & marraine)
+3. Mot de passe oublié
+4. Edition & suppression du profil
+Découvrir les marraines
+5. Possibilité pour la lycéenne de parcourir la liste des marraines (proposées selon ses critères) et consulter le profil de toutes les marraines disponibles (qui ne sont pas déjà “appairées”)
+6. Possibilité pour la lycéenne de contacter une marraine avant de la choisir pour le programme via un système de messagerie
+Interactions marraines / filleules
+7. Dès lors que la lycéenne contacte une marraine potentielle, celle-ci a la possibilité de lui répondre via le système de messagerie.
+8. Un système de push notification est en place pour chaque nouveau message
+9. Marraines ou lycéennes peuvent proposer à leur interlocutrice un “appairage” et démarrer le programme de mentoring.
+10. Les interlocutrices peuvent refuser / accepter l’appairage et, à tout moment bloquer ou signaler
+Back-office & RGPD
+11. Une plateforme d’admin est disponible pour les membres de WHAT06 pour:
+o Ajouter manuellement les marraines (nous vérifions et validons à la main chaque profil pour s’assurer de la fiabilité de nos marraines)
+o Editer/créer/supprimer chaque profil (admin, marraines, lycéennes)
+o Gérer les appairages
+12. Nos CGU sont à jour au regard de ces fonctionnalités et devront probablement être mise à jour avec les nouvelles que nous souhaitons ajouter.
+Le front-office (marraine et lycéenne) est majoritairement utilisé via mobile (app android ou apple) bien qu’un accès web soit possible. Le back-office, pour les admin est sur desktop.
+Fonctionnalités à ajouter
+Objectifs période scolaire 2025-2026
+Aujourd’hui : 36 inscrites pour 3 mentorings
+36 lycéennes inscrites > 14% > 7 mises en relation > 71% > 5 matchs > 60% > 3 mentorings réguliers
+Demain
+Version initial : 31-07-2025
+200 lycéennes inscrites > 25% > 50 mises en relation > 60% > 30 matchs > 33% > 10 mentorings réguliers
+Frustrations et opportunités
+1. Les lycéennes n’osent pas contacter les marraines > Comment booster la mise en relation?
+2. Les lycéennes ne comprennent pas notre proposition de valeur (ou celle-ci est inadaptée) > Comment guider la bonne audience et faire comprendre la valeur de notre app?
+3. Les lycéennes matchent pour un premier contact puis n’enclenchent pas de monitoring > Comment booster et enclencher un mentoring régulier ?
+Top 5 des développements à mettre en place
+4. Une page d’accueil enrichie
+5. Accès au panel de lycéennes auprès des marraines
+6. Premier contact sans message (type “Poke”)
+7. Système de notification lors du parcours utilisateur
+8. Onboarding
+Détail de la page d’accueil enrichie et création d’une FAQ
+Objectif : Booster les inscriptions pertinentes et informer clairement sur la proposition de valeur
+Contexte : La page d’accueil actuellement disponible ne contient que la possibilité de s’inscrire ou se connecter. Nous souhaitons garder cette page et, ajouter en amont une page d’accueil enrichie d’un contenu permettant de mieux comprendre notre proposition de valeur ainsi qu’un accès à une FAQ
+Périmètre fourni par WHAT06
+● Définition et rédaction du contenu
+● UX & UI des pages (Accueil + FAQ)
+● Révision de l’architecture de l’information/navigation
+● Dev de la page statique HTML/CSS/JS responsive
+Périmètre demandé pour l'exécution du cahier des charges
+● Intégration dans l’app des pages
+● Mise à jour de la navigation dans le framework principal pour permettre l’accès à ces deux éléments via un menu
+Détail de la fonction de "premier contact" sans lancer une conversation
+Objectif : Créer un pont entre filleules et marraines pour faciliter les premiers échanges sans engagement.
+Contexte: A ce jour, les lycéennes sont les seules à pouvoir contacter une marraine potentielle en leur écrivant via le système de messagerie
+Version initial : 31-07-2025
+Fonctionnalité :
+● Un geste simple type “poke”, “bonjour” ou “emoji”
+● Notifie la marraine qu’une filleule est intéressée → incite à engager une conversation
+Périmètre WHAT06
+● Définition fonctionnelle
+● Intégration dans le parcours utilisateur
+Périmètre demandé pour l'exécution du cahier des charges
+● Développement technique complet de la fonctionnalité
+● Suivi de la fonctionnalité dans le dashboard admin avec le nombre de pokes et le taux de conversion en discussion réelle
+Système de notifications dynamiques
+Objectif : Stimuler les interactions et le suivi dans le parcours de mentoring via des notifications personnalisées.
+Contexte: Un système de notification push existe pour prévenir d’un nouveau message ou d’un appairage. Nous souhaitons aller plus loin et pouvoir envoyer des notifications en fonction de certaines conditions (date, nombre de jours sans nouvelles…)
+Exemples de notifications :
+● Post-inscription : ex. “Bienvenue [Nom], découvre ta marraine préférée : [X]”
+● Rappel après X jours : “As-tu trouvé ta marraine ?”
+● Mentorat actif : “N'hésite pas à discuter de ton dossier Parcoursup avec ta marraine!”
+Périmètre WHAT06
+● Définition fonctionnelle + définition des règles
+● Contenu des notifications
+Le système de notification peut être plus ou moins complexe. Proposition de deux options :
+1. Notification automatique simple (sans interface): Mettre en place un système automatisé d’envoi de notifications déclenchées par des événements définis (connexion, inscription, inactivité) sans interface d’administration.
+KO: Les messages personnalisés selon les moments de la vie scolaire, notifier une rencontre filleule/marraine pour l’aspect communautaire
+2. Interface admin pour paramétrer les notifications (semi-auto): Permettre aux admin de créer, éditer et activer des notifications automatiques sans intervention technique via le panneau d’admin
+Version initial : 31-07-2025
+A discuter avec le dev pour mieux comprendre la complexité et évaluer les possibilités
+Périmètre demandé pour l'exécution du cahier des charges
+● Développement technique en fonction de l’option 1 ou 2
+● Notifications push
+● Suivi de la fonctionnalité dans le dashboard admin avec le nombre de notif ouvertes et le taux de conversion en discussion réelles
+Permettre aux marraines d’entrer en contact auprès des lycéennes
+Objectif : Permettre aux marraines de contacter d'elles-mêmes les lycéennes, potentiellement timides.
+Contexte: A ce jour, les marraines ont un rôle inactif tant que les lycéennes ne prennent pas l’initiative de les contacter. Nous souhaitons dorénavant donner l’accès à ces dernières aux profils de jeunes filles et autoriser la connexion.
+Périmètre WHAT06
+● Adaptation de la navigation et du parcours utilisateur
+Périmètre demandé pour l'exécution du cahier des charges
+● Mise à jour de la fonctionnalité existante de consultation du profil des marraines pour permettre l’équivalent auprès des jeunes filles:
+o Les lycéennes continuent d’avoir accès aux profils marraines par ordre de pertinence fonction de leurs critères et peuvent les contacter
+o Les marraines ont désormais accès au profil des lycéennes par ordre de pertinence et peuvent les contacter
+● Suivi de la fonctionnalité dans le dashboard admin (Qui a contacté qui?)
+Ce qui est hors-périmètre
+1. La conception UX/UI
+2. La gestion de projet
+3. La mise à jour des CGU (page statique directement intégrée dans l’app), de la page d’accueil ou des FAQ
+4. De nouvelles fonctionnalités sur le système de messagerie (nous faisons la mise en relation puis, les utilisatrices peuvent décider du canal qu’elles préfèrent pour leur programme de mentoring)
+Version initial : 31-07-2025
+4. Technologies existantes
+Frontend/Backend Langages
+Svelte 56.6%, TypeScript 35.6%, JavaScript 2.3%, Edge 2.1%, Swift 1.2%, CSS 1.1%
+API Starting page: https://github.com/WHAT-06/Tech4Elles/blob/main/apps/api/start/routes.ts
+Infra
+● DB: postgres
+● Hebergement: Kabia
+● Git: https://github.com/WHAT-06/Tech4Elles
+● CI/CD: https://github.com/WHAT-06/Tech4Elles/blob/main/.github/workflows/build-and-deploy.yml
+● Docker images: https://github.com/WHAT-06/Tech4Elles/pkgs/container/api
+5. État actuel du code
+● Référentiel du code source sur Git, release v1.0.0: https://github.com/WHAT-06/Tech4Elles/releases/tag/1.0.0
+● Documentation: README.md
+● Tests automatisés en place ? --> No
+● Évaluation technique préalable (à fournir ou à faire faire)
+6. Besoins techniques WIP
+Stack à respecter ou à faire évoluer
+Tests, performance attendue
+Sécurité (RGPD, auth, logs…)
+7. UX / UI WIP
+8. Livrables attendus WIP
+- Code propre et documenté
+Version initial : 31-07-2025
+o Suivre les bonnes pratiques et laisser le code propre
+o Code testé UT
+- Fonctionnalités listées dans un backlog ou user stories
+- Tests unitaires / d’intégration
+- Déploiement sur staging / prod
+9. Annexes
+- Maquette quand elles seront prêtes
+- Définitions fonctionnelles
