@@ -11,12 +11,10 @@ Ce formulaire vous permet de **récupérer toutes les informations manquantes** 
 ### **1. Compte Cloudflare**
 - [ ] **Email de connexion** : `_________________`
 - [ ] **Mot de passe** : `_________________`
-- [ ] **Compte existant** : ☐ Oui ☐ Non (à créer)
 
 ### **2. Account ID Cloudflare**
 - [ ] **Account ID** : `________________________________`
 - [ ] **Nom du compte** : `_________________`
-- [ ] **Type de compte** : ☐ Gratuit ☐ Pro ☐ Business ☐ Enterprise
 
 ### **3. API Token Cloudflare**
 - [ ] **Token API** : `________________________________________________`
@@ -24,10 +22,6 @@ Ce formulaire vous permet de **récupérer toutes les informations manquantes** 
 - [ ] **Date de création** : `__/__/____`
 - [ ] **Date d'expiration** : `__/__/____` (si applicable)
 
-### **4. Projets Cloudflare Pages**
-- [ ] **Projet "tech4elles"** : ☐ Existant ☐ À créer
-- [ ] **Projet "tech4elles-admin"** : ☐ Existant ☐ À créer
-- [ ] **Domaines associés** : `_________________`
 
 ---
 
@@ -63,32 +57,6 @@ Ce formulaire vous permet de **récupérer toutes les informations manquantes** 
 3. Créer le projet "tech4elles"
 4. Créer le projet "tech4elles-admin"
 5. Noter les URLs générées
-```
-
----
-
-## 📝 **FORMULAIRE DE DEMANDE**
-
-### **Informations Personnelles**
-- **Nom** : `_________________`
-- **Prénom** : `_________________`
-- **Email** : `_________________`
-- **Organisation** : `_________________`
-
-### **Demande d'Accès**
-- **Service demandé** : ☐ Compte Cloudflare ☐ API Token ☐ Projets Pages
-- **Usage prévu** : Déploiement automatique Tech4Elles
-- **Niveau d'accès** : ☐ Lecture ☐ Écriture ☐ Administration
-- **Durée d'accès** : ☐ Permanent ☐ Temporaire ☐ Renouvelable
-
-### **Justification**
-```
-Décrivez pourquoi vous avez besoin de ces accès :
-
-________________________________________________
-________________________________________________
-________________________________________________
-________________________________________________
 ```
 
 ---

@@ -1278,3 +1278,352 @@ Implémenter une documentation technique complète pour tous les fichiers du pro
 5. **Historique** des métriques sur longue période
 
 **Statut final : DOCUMENTATION COMPLÈTE ET MONITORING AVANCÉ OPÉRATIONNELS** ✅
+
+---
+
+# 📅 **Jour 8-10 - Session Corrections Flow d'Inscription et Interface**
+
+## 🎯 **Objectifs de la Session**
+
+### **Objectif Principal**
+Réorganiser le flow d'inscription selon les spécifications du client et corriger tous les problèmes d'interface (headers, footers, menu burger, validation email).
+
+### **Objectifs Spécifiques**
+1. **Réorganisation du flow d'inscription** : Email/password à la fin
+2. **Correction des headers manquants** sur toutes les pages
+3. **Résolution du problème du menu burger** tronqué
+4. **Correction des erreurs de validation email**
+5. **Ajout de pages légales** et fonctionnalités manquantes
+
+## 🚀 **Réalisations Majeures**
+
+### **1. Réorganisation du Flow d'Inscription**
+
+#### **Nouvel Ordre des Étapes**
+- **Avant** : `['firstName', 'emailPassword', 'photo', 'school', ...]`
+- **Après** : `['firstName', 'photo', 'school', 'targetJob', 'subjects', 'interests', 'goal', 'reasons', 'personality', 'emailPassword']`
+
+#### **Modifications Apportées**
+- **Commentaire de la section photo** : Upload temporairement désactivé
+- **Mise à jour de la logique** : `canContinue` adapté pour avatars uniquement
+- **Ajout de checkboxes** : CGU et charte éthique dans `EmailPassword.svelte`
+
+#### **Fonctionnalités Ajoutées**
+- **Checkbox CGU** : "J'accepte les Conditions Générales d'Utilisation et la Politique de confidentialité"
+- **Checkbox Charte** : "Mes parents m'autorisent à utiliser l'application et ont lu notre charte éthique"
+- **Liens fonctionnels** vers les pages légales
+
+### **2. Correction des Headers et Footers**
+
+#### **Problèmes Identifiés**
+- **Headers manquants** sur `/register`, `/login`, `/forgot-password`, `/mentors`, `/contacts`
+- **Footer non responsive** : Ne prenait pas 100% de la largeur
+- **Double footer** sur `/forgot-password`
+- **Dégradés incohérents** entre les pages
+
+#### **Solutions Appliquées**
+- **Harmonisation des headers** : Conversion de `AppBar` vers `Header` sur toutes les pages
+- **Correction de la largeur** : Suppression de `max-w-screen-xl` et `mx-auto`
+- **Suppression du double footer** sur `/forgot-password`
+- **Uniformisation des dégradés** : `bg-gradient-to-r from-theme-gradient_start to-theme-gradient_end`
+
+#### **Pages Corrigées**
+- ✅ `/register` - Header avec burger menu
+- ✅ `/login` - Header avec burger menu
+- ✅ `/forgot-password` - Header avec burger menu
+- ✅ `/mentors` - Header avec burger menu
+- ✅ `/contacts` - Header avec burger menu
+- ✅ `/home` - Header avec burger menu
+- ✅ `/settings` - Header avec burger menu
+- ✅ `/about` - Header avec burger menu
+- ✅ `/charte-ethique` - Header avec burger menu
+
+### **3. Résolution du Problème du Menu Burger**
+
+#### **Problème Persistant**
+- **Menu burger tronqué** sur la droite
+- **Position instable** selon l'état de connexion
+- **Troncature plus importante** quand utilisateur connecté
+
+#### **Évolutions des Solutions**
+1. **Tentative 1** : Ajustement des marges (`right-0`, `right-4`)
+2. **Tentative 2** : Réduction de largeur (`w-80` → `w-72` → `w-64`)
+3. **Tentative 3** : Augmentation des marges (`right-8`, `right-12`)
+4. **Tentative 4** : Position `absolute` au lieu de `fixed`
+5. **Tentative 5** : Approche portal - sortir le menu du header
+
+#### **Solution Finale - Approche Portal**
+- **Menu en portal** : Sorti du conteneur `<header>`
+- **Position fixed** : `fixed top-20 right-4`
+- **Largeur optimisée** : `w-72` (288px)
+- **Z-index élevé** : `z-[9999]`
+- **Largeur maximale** : `calc(100vw - 32px)`
+
+#### **Code de la Solution**
+```svelte
+<!-- Menu burger déroulant - PORTAL en dehors du header -->
+{#if showBurgerMenu}
+  <div class="burger-menu-portal fixed top-20 right-4 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-[9999] overflow-hidden" style="max-height: 80vh; overflow-y: auto; max-width: calc(100vw - 32px);">
+    <!-- Contenu du menu -->
+  </div>
+{/if}
+
+<style>
+  .burger-menu-portal {
+    position: fixed !important;
+    top: 80px !important;
+    right: 16px !important;
+    z-index: 9999 !important;
+    width: 288px !important;
+    max-width: calc(100vw - 32px) !important;
+  }
+
+  @media (max-width: 640px) {
+    .burger-menu-portal {
+      right: 8px !important;
+      width: calc(100vw - 16px) !important;
+    }
+  }
+</style>
+```
+
+### **4. Correction des Erreurs de Validation Email**
+
+#### **Problèmes Identifiés**
+- **Erreur 404** : `Cannot GET:/users/27`
+- **Popup d'erreur rouge** après validation
+- **Nom utilisateur** devenait "utilisateur" au lieu du prénom
+
+#### **Solutions Appliquées**
+- **Correction de l'endpoint** : Utilisation de `/me` au lieu de `/users/{id}`
+- **Correction de la structure** : `userRes.data.user` au lieu de `userRes.data`
+- **Amélioration de la gestion d'erreur** : Fallback vers l'auth actuel
+- **Ajout de logs de diagnostic** pour identifier les problèmes
+
+#### **Code de la Correction**
+```typescript
+export const refreshUserProfile = async () => {
+  try {
+    const currentAuth = get(auth);
+    if (!currentAuth?.user) {
+      console.warn('Aucun utilisateur connecté pour recharger le profil');
+      return currentAuth;
+    }
+
+    const userRes = await api.get('/me'); // Corrected endpoint
+    const profileRes = await api.get(`/${currentAuth.user.type}s/${currentAuth.user.id}`);
+
+    if (userRes.status === 200 && profileRes.status === 200) {
+      const updatedAuth = {
+        ...currentAuth,
+        user: userRes.data.user, // Corrected data extraction
+        profile: profileRes.data
+      };
+
+      auth.set(updatedAuth);
+      return updatedAuth;
+    } else {
+      return currentAuth;
+    }
+  } catch (error) {
+    if (error?.response?.status === 401 || error?.response?.status === 403) {
+      logout(true);
+      return null;
+    } else {
+      return currentAuth;
+    }
+  }
+};
+```
+
+### **5. Ajout de Pages et Fonctionnalités**
+
+#### **Nouvelles Pages Créées**
+- **Page `/charte-ethique`** : Contenu depuis `charte_ethique.txt`
+- **Page `/about`** : Contenu depuis `about.txt`
+- **Liens dans le footer** : Ajout des liens vers les nouvelles pages
+
+#### **Améliorations du Flow d'Inscription**
+- **Checkboxes obligatoires** dans `EmailPassword.svelte`
+- **Liens fonctionnels** vers les pages légales
+- **Validation robuste** des champs requis
+
+### **6. Améliorations de l'Interface**
+
+#### **Corrections Visuelles**
+- **Scrollbar manquante** sur `/settings` : Ajout de `flex-1 overflow-y-auto`
+- **Titre non traduit** : "register.titles.photo" → "Choisis ton avatar"
+- **Menu burger sur `/register`** : Remplacement d'`AppBar` par `Header`
+
+#### **Améliorations du Header**
+- **Avatar utilisateur** : Affichage de l'avatar et du prénom
+- **Badge de notifications** : Indicateur avec nombre de notifications
+- **Toast de déconnexion** : Message de confirmation avec `svelte-sonner`
+
+## 🔧 **Implémentation Technique**
+
+### **Fichiers Modifiés**
+
+#### **Flow d'Inscription**
+- `RegisterFlow.svelte` - Réorganisation des étapes
+- `PhotoSelection.svelte` - Commentaire de la section photo
+- `EmailPassword.svelte` - Ajout des checkboxes
+- `AvatarSelector.svelte` - Correction des types TypeScript
+
+#### **Headers et Navigation**
+- `Header.svelte` - Solution portal pour le menu burger
+- `AppBar.svelte` - Styles de protection
+- Toutes les pages - Conversion vers `Header`
+
+#### **Validation Email**
+- `auth.ts` - Correction de l'endpoint et structure de données
+- `verify-email/+page.svelte` - Amélioration de la logique de validation
+
+#### **Pages Légales**
+- `charte-ethique/+page.svelte` - Nouvelle page
+- `about/+page.svelte` - Nouvelle page
+- `Footer.svelte` - Ajout des liens
+
+### **Corrections CSS**
+
+#### **Menu Burger Portal**
+```css
+.burger-menu-portal {
+  position: fixed !important;
+  top: 80px !important;
+  right: 16px !important;
+  z-index: 9999 !important;
+  width: 288px !important;
+  max-width: calc(100vw - 32px) !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 640px) {
+  .burger-menu-portal {
+    right: 8px !important;
+    width: calc(100vw - 16px) !important;
+  }
+}
+```
+
+#### **Headers Uniformes**
+```css
+header {
+  background: linear-gradient(to right, var(--theme-gradient-start), var(--theme-gradient-end));
+}
+```
+
+## 📊 **Tests et Validation**
+
+### **Tests du Flow d'Inscription**
+- ✅ **Ordre des étapes** : Email/password à la fin
+- ✅ **Checkboxes** : CGU et charte éthique obligatoires
+- ✅ **Avatars** : Sélection fonctionnelle
+- ✅ **Validation** : Champs requis validés
+
+### **Tests des Headers**
+- ✅ **Toutes les pages** : Headers visibles et fonctionnels
+- ✅ **Menu burger** : Plus de troncature
+- ✅ **Navigation** : Liens fonctionnels
+- ✅ **Responsive** : Adaptation mobile et desktop
+
+### **Tests de Validation Email**
+- ✅ **Endpoint correct** : `/me` au lieu de `/users/{id}`
+- ✅ **Structure de données** : `userRes.data.user` correct
+- ✅ **Gestion d'erreur** : Fallback robuste
+- ✅ **Affichage** : Prénom correct après validation
+
+### **Tests des Pages Légales**
+- ✅ **Pages créées** : `/charte-ethique` et `/about`
+- ✅ **Liens fonctionnels** : Footer et header
+- ✅ **Contenu** : Textes complets et appropriés
+- ✅ **Navigation** : Accessibles depuis toutes les pages
+
+## 🎉 **Résultats Obtenus**
+
+### **✅ Flow d'Inscription Réorganisé**
+- **Email/password à la fin** selon les spécifications
+- **Checkboxes obligatoires** pour CGU et charte éthique
+- **Section photo commentée** temporairement
+- **Validation robuste** de tous les champs
+
+### **✅ Headers et Footers Corrigés**
+- **100% des pages** avec headers visibles
+- **Footer responsive** sur toutes les tailles d'écran
+- **Dégradés uniformes** sur toutes les pages
+- **Navigation cohérente** et intuitive
+
+### **✅ Menu Burger Fonctionnel**
+- **Plus de troncature** grâce à l'approche portal
+- **Position stable** sur toutes les pages
+- **Responsive** sur mobile et desktop
+- **Navigation fluide** entre les options
+
+### **✅ Validation Email Corrigée**
+- **Plus d'erreurs 404** avec le bon endpoint
+- **Structure de données** correcte
+- **Gestion d'erreur** robuste
+- **Affichage correct** du prénom utilisateur
+
+### **✅ Pages Légales Ajoutées**
+- **Charte éthique** complète et accessible
+- **Page "À propos"** avec informations détaillées
+- **Liens fonctionnels** dans footer et header
+- **Contenu approprié** et professionnel
+
+## ⏱️ **Temps Total Consacré - Session Corrections**
+
+### **Jour 8** : 6h00
+- **Matin** : 3h00 (Réorganisation flow + headers)
+- **Après-midi** : 3h00 (Menu burger + validation email)
+
+### **Jour 9** : 4h00
+- **Matin** : 2h00 (Pages légales + corrections)
+- **Après-midi** : 2h00 (Tests et validation)
+
+### **Jour 10** : 2h00
+- **Matin** : 2h00 (Documentation et finalisation)
+
+### **Total cumulé** : **69h00** sur 10 jours
+
+## 🏆 **Impact et Bénéfices**
+
+### **Pour les Utilisateurs**
+- **Flow d'inscription** plus logique et intuitif
+- **Interface cohérente** sur toutes les pages
+- **Navigation fluide** sans problèmes techniques
+- **Validation email** fiable et sans erreur
+
+### **Pour l'Administration**
+- **Pages légales** complètes et accessibles
+- **Interface admin** stable et fonctionnelle
+- **Monitoring** des interactions utilisateur
+- **Conformité** avec les exigences légales
+
+### **Pour le Développement**
+- **Code maintenable** avec corrections robustes
+- **Architecture claire** avec séparation des responsabilités
+- **Tests validés** sur toutes les fonctionnalités
+- **Documentation** à jour et complète
+
+### **Pour la Qualité**
+- **Interface utilisateur** optimale et responsive
+- **Fonctionnalités** stables et fiables
+- **Navigation** intuitive et cohérente
+- **Expérience utilisateur** améliorée
+
+## 🚀 **Prochaines Étapes**
+
+### **Améliorations Possibles**
+1. **Réactivation de l'upload photo** quand la fonctionnalité sera prête
+2. **Tests de régression** pour valider toutes les corrections
+3. **Optimisation mobile** pour améliorer l'expérience
+4. **Tests d'intégration** pour le flow complet
+
+### **Maintenance Continue**
+1. **Surveillance des logs** pour identifier les problèmes
+2. **Mise à jour des traductions** pour les clés manquantes
+3. **Documentation technique** à maintenir à jour
+4. **Tests automatisés** pour la validation continue
+
+**Statut final : FLOW D'INSCRIPTION RÉORGANISÉ ET INTERFACE CORRIGÉE** ✅
