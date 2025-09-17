@@ -85,3 +85,6 @@ logs/
 config.local.*
 settings.local.*
 local.*
+
+
+syntheses_analyses_cursor/
