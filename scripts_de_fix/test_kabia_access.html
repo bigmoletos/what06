@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Accès Base Kabia</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; }
+        .info { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .button { background: #2196f3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px; }
+        .code { background: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Accès Base de Données Kabia - Tech4Elles</h1>
+
+        <div class="info">
+            <h2>📋 Informations de Connexion</h2>
+            <div class="code">
+                <strong>Hôte :</strong> 127.0.0.1<br>
+                <strong>Utilisateur :</strong> profes12_tech<br>
+                <strong>Mot de passe :</strong> [transmis par email]<br>
+                <strong>Interface :</strong> phpMyAdmin
+            </div>
+        </div>
+
+        <h2>🎯 Actions à Réaliser</h2>
+
+        <a href="https://info.lin419.cloud-kabia.com/phpmyadmin/" target="_blank" class="button">
+            📱 Ouvrir phpMyAdmin Kabia
+        </a>
+
+        <h3>1. Examiner les Tables</h3>
+        <div class="code">
+            -- Voir les utilisateurs existants
+            SELECT id, email, type, firstName, lastName, created_at FROM users;
+
+            -- Vérifier la structure de la table
+            DESCRIBE users;
+        </div>
+
+        <h3>2. Créer un Compte Admin</h3>
+        <div class="code">
+            -- Insérer un admin avec mot de passe simple
+            INSERT INTO users (email, password, type, firstName, lastName, created_at, updated_at)
+            VALUES (
+                'admin@tech4elles.local',
+                '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+                'admin',
+                'Admin',
+                'Local',
+                NOW(),
+                NOW()
+            );
+
+            -- Le mot de passe ci-dessus correspond à "password"
+        </div>
+
+        <h3>3. Créer le Profil Admin</h3>
+        <div class="code">
+            -- Récupérer l'ID du user créé
+            SET @user_id = LAST_INSERT_ID();
+
+            -- Créer le profil admin associé
+            INSERT INTO admins (id, userId, created_at, updated_at)
+            VALUES (@user_id, @user_id, NOW(), NOW());
+        </div>
+
+        <h3>4. Tester la Connexion</h3>
+        <div class="info">
+            <strong>Identifiants de test :</strong><br>
+            Email : admin@tech4elles.local<br>
+            Mot de passe : password
+        </div>
+
+        <h2>📞 Support Alternatif</h2>
+        <div class="info">
+            <strong>Axel (ancien développeur) :</strong><br>
+            Téléphone : +33 6 19 26 57 92<br>
+            <em>Peut fournir des comptes de test fonctionnels</em>
+        </div>
+
+        <h2>🔍 Liens Utiles</h2>
+        <a href="https://extranetv2.kabia.eu/#/support/tickets/" target="_blank" class="button">
+            🎫 Support Kabia
+        </a>
+
+        <a href="https://console.firebase.google.com/project/tech4elles-1b393/" target="_blank" class="button">
+            🔥 Console Firebase
+        </a>
+    </div>
+</body>
+</html>

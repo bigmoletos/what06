@@ -86,5 +86,8 @@ config.local.*
 settings.local.*
 local.*
 
-
+# Dossier à ignorer
 syntheses_analyses_cursor/
+modop_analyse_evol/
+relations_client/
+svelte/
