@@ -147,7 +147,7 @@ node ace migration:status
 
 ### **Compte Admin par Défaut**
 ```
-Email: pro@alopez.fr
+Email: admin@yopmail.com
 Mot de passe: admin1234 (modifié dans admin_seeder.ts)
 ```
 
@@ -176,7 +176,7 @@ Mot de passe: admin1234 (modifié dans admin_seeder.ts)
 
 #### **1. Connexion Admin**
 - Ouvrir http://localhost:3001
-- Se connecter avec `pro@alopez.fr` / `admin1234`
+- Se connecter avec `admin@yopmail.com` / `admin1234`
 - Vérifier l'accès au dashboard
 
 #### **2. API Backend**

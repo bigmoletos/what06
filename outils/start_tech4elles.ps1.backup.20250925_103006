@@ -1,0 +1,268 @@
+# 🚀 Script de Démarrage Tech4Elles
+# Utilise la bonne version de Node.js et démarre l'application
+
+Write-Host "🚀 Démarrage de Tech4Elles..." -ForegroundColor Green
+Write-Host ""
+
+# Vérifier que nous sommes dans le bon dossier
+if (-not (Test-Path "../Tech4Elles/docker-compose.dev.yml")) {
+    Write-Host "❌ Fichier docker-compose.dev.yml non trouvé!" -ForegroundColor Red
+    Write-Host "💡 Exécutez ce script depuis le dossier outils" -ForegroundColor Yellow
+    exit 1
+}
+
+# Vérifier et installer Node.js si nécessaire
+Write-Host "🔍 Vérification de Node.js..." -ForegroundColor Cyan
+$nodeVersion = $null
+
+try {
+    $nodeVersion = node --version 2>$null
+    if ($nodeVersion) {
+        Write-Host "✅ Node.js détecté: $nodeVersion" -ForegroundColor Green
+    }
+} catch {
+    Write-Host "❌ Node.js non trouvé" -ForegroundColor Red
+}
+
+if (-not $nodeVersion) {
+    Write-Host "📥 Installation de Node.js..." -ForegroundColor Yellow
+
+    # Essayer d'installer Node.js via winget
+    try {
+        Write-Host "💡 Tentative d'installation via winget..." -ForegroundColor Cyan
+        winget install OpenJS.NodeJS
+        Write-Host "✅ Node.js installé via winget" -ForegroundColor Green
+
+        # Recharger le PATH
+        $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+
+        # Vérifier à nouveau
+        Start-Sleep -Seconds 3
+        $nodeVersion = node --version 2>$null
+        if ($nodeVersion) {
+            Write-Host "✅ Node.js maintenant disponible: $nodeVersion" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "❌ Échec de l'installation via winget" -ForegroundColor Red
+        Write-Host "💡 Veuillez installer Node.js manuellement depuis https://nodejs.org/" -ForegroundColor Yellow
+        Write-Host "💡 Ou utilisez: winget install OpenJS.NodeJS" -ForegroundColor Yellow
+        exit 1
+    }
+}
+
+# Vérifier et installer pnpm si nécessaire
+Write-Host "🔍 Vérification de pnpm..." -ForegroundColor Cyan
+$pnpmVersion = $null
+
+try {
+    $pnpmVersion = pnpm --version 2>$null
+    if ($pnpmVersion) {
+        Write-Host "✅ pnpm détecté: $pnpmVersion" -ForegroundColor Green
+    }
+} catch {
+    Write-Host "❌ pnpm non trouvé" -ForegroundColor Red
+}
+
+if (-not $pnpmVersion) {
+    Write-Host "📥 Installation de pnpm..." -ForegroundColor Yellow
+
+    try {
+        # Installer pnpm via npm
+        Write-Host "💡 Installation via npm..." -ForegroundColor Cyan
+        npm install -g pnpm
+        Write-Host "✅ pnpm installé via npm" -ForegroundColor Green
+
+        # Recharger le PATH
+        $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+
+        # Vérifier à nouveau
+        Start-Sleep -Seconds 2
+        $pnpmVersion = pnpm --version 2>$null
+        if ($pnpmVersion) {
+            Write-Host "✅ pnpm maintenant disponible: $pnpmVersion" -ForegroundColor Green
+        }
+    } catch {
+        Write-Host "❌ Échec de l'installation de pnpm" -ForegroundColor Red
+        Write-Host "💡 Tentative d'installation via winget..." -ForegroundColor Yellow
+
+        try {
+            winget install pnpm
+            Write-Host "✅ pnpm installé via winget" -ForegroundColor Green
+
+            # Recharger le PATH
+            $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+
+            # Vérifier à nouveau
+            Start-Sleep -Seconds 2
+            $pnpmVersion = pnpm --version 2>$null
+            if ($pnpmVersion) {
+                Write-Host "✅ pnpm maintenant disponible: $pnpmVersion" -ForegroundColor Green
+            }
+        } catch {
+            Write-Host "❌ Échec de l'installation de pnpm" -ForegroundColor Red
+            Write-Host "💡 Veuillez installer pnpm manuellement:" -ForegroundColor Yellow
+            Write-Host "   npm install -g pnpm" -ForegroundColor White
+            Write-Host "   ou winget install pnpm" -ForegroundColor White
+            exit 1
+        }
+    }
+}
+
+# Vérifier et démarrer PostgreSQL
+Write-Host "🐘 Vérification de PostgreSQL..." -ForegroundColor Cyan
+
+# Vérifier les services PostgreSQL locaux
+$postgresServices = Get-Service | Where-Object {$_.Name -like "*postgres*"}
+$postgresRunning = $false
+
+if ($postgresServices) {
+    foreach ($service in $postgresServices) {
+        if ($service.Status -eq "Running") {
+            Write-Host "✅ Service PostgreSQL $($service.Name) déjà en cours d'exécution" -ForegroundColor Green
+            $postgresRunning = $true
+            break
+        }
+    }
+
+    if (-not $postgresRunning) {
+        Write-Host "⚠️ Services PostgreSQL arrêtés, tentative de démarrage..." -ForegroundColor Yellow
+        try {
+            # Essayer de démarrer le service le plus récent
+            $latestService = $postgresServices | Sort-Object Name -Descending | Select-Object -First 1
+            Start-Service $latestService.Name -ErrorAction SilentlyContinue
+            Write-Host "✅ Service PostgreSQL $($latestService.Name) démarré" -ForegroundColor Green
+            $postgresRunning = $true
+        } catch {
+            Write-Host "❌ Échec du démarrage des services PostgreSQL locaux" -ForegroundColor Red
+        }
+    }
+}
+
+# Si PostgreSQL local non disponible, utiliser Docker
+if (-not $postgresRunning) {
+    Write-Host "🐳 Utilisation de PostgreSQL via Docker..." -ForegroundColor Cyan
+    try {
+        docker compose -f ../Tech4Elles/docker-compose.dev.yml up -d
+        Write-Host "✅ PostgreSQL Docker démarré" -ForegroundColor Green
+        $postgresRunning = $true
+    } catch {
+        Write-Host "❌ Échec du démarrage PostgreSQL via Docker" -ForegroundColor Red
+        Write-Host "💡 Vérifiez que Docker est installé et en cours d'exécution" -ForegroundColor Yellow
+        exit 1
+    }
+}
+
+# Attendre que PostgreSQL soit prêt
+Write-Host "⏳ Attente du démarrage de PostgreSQL..." -ForegroundColor Yellow
+Start-Sleep -Seconds 5
+
+# Naviguer vers le dossier API
+Write-Host "📁 Navigation vers l'API..." -ForegroundColor Cyan
+Set-Location ../Tech4Elles/apps/api
+
+# Vérifier que les migrations sont à jour
+Write-Host "🔍 Vérification des migrations..." -ForegroundColor Cyan
+try {
+    $migrationStatus = node ace migration:status 2>$null
+    if ($migrationStatus -like "*pending*") {
+        Write-Host "⚠️ Migrations en attente détectées" -ForegroundColor Yellow
+        Write-Host "🔄 Exécution des migrations..." -ForegroundColor Cyan
+        node ace migration:run
+        Write-Host "✅ Migrations exécutées" -ForegroundColor Green
+    } else {
+        Write-Host "✅ Migrations à jour" -ForegroundColor Green
+    }
+} catch {
+    Write-Host "⚠️ Impossible de vérifier le statut des migrations" -ForegroundColor Yellow
+    Write-Host "💡 Tentative d'exécution des migrations..." -ForegroundColor Cyan
+    try {
+        node ace migration:run
+        Write-Host "✅ Migrations exécutées" -ForegroundColor Green
+    } catch {
+        Write-Host "❌ Échec des migrations" -ForegroundColor Red
+        Write-Host "💡 Vérifiez la connexion à la base de données" -ForegroundColor Yellow
+    }
+}
+
+# Vérifier si les tables contiennent des données (seeders nécessaires)
+Write-Host "🌱 Vérification des données utilisateur..." -ForegroundColor Cyan
+$needsSeeding = $false
+
+# TEMPORAIRE : Désactiver la vérification automatique qui supprime l'admin
+Write-Host "⚠️ Vérification admin désactivée temporairement pour éviter la suppression automatique" -ForegroundColor Yellow
+Write-Host "💡 L'admin existe déjà et ne doit pas être recréé" -ForegroundColor Green
+
+# Exécuter les seeders si nécessaire
+if ($needsSeeding) {
+    Write-Host "🌱 Exécution des seeders..." -ForegroundColor Cyan
+    try {
+        # Essayer d'exécuter tous les seeders
+        node ace db:seed
+        Write-Host "✅ Seeders exécutés avec succès" -ForegroundColor Green
+
+        # Vérifier à nouveau la connexion admin
+        Start-Sleep -Seconds 2
+        try {
+            $testData = '{"email":"admin@yopmail.com","password":"admin1234"}'
+            $response = Invoke-RestMethod -Uri "http://localhost:3333/users/login" -Method POST -ContentType "application/json" -Body $testData -ErrorAction Stop
+            Write-Host "✅ Connexion admin vérifiée après seeding" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️ Connexion admin échouée après seeding" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "⚠️ Erreur lors de l'exécution des seeders: $($_.Exception.Message)" -ForegroundColor Yellow
+        Write-Host "💡 Tentative d'exécution individuelle des seeders..." -ForegroundColor Cyan
+
+        # Essayer individuellement
+        $seeders = @(
+            "database/seeders/admin_seeder.ts",
+            "database/seeders/mentee_seeder.ts",
+            "database/seeders/mentor_seeder.ts"
+        )
+
+        foreach ($seeder in $seeders) {
+            try {
+                node ace db:seed --files="$seeder"
+                Write-Host "✅ Seeder $seeder exécuté" -ForegroundColor Green
+            } catch {
+                Write-Host "⚠️ Échec du seeder $seeder" -ForegroundColor Yellow
+            }
+        }
+    }
+} else {
+    Write-Host "✅ Données utilisateur déjà présentes" -ForegroundColor Green
+}
+
+# Retourner au dossier racine
+Set-Location ..\..
+
+# Installer les dépendances si nécessaire
+if (-not (Test-Path "node_modules")) {
+    Write-Host "📦 Installation des dépendances..." -ForegroundColor Cyan
+    pnpm install
+}
+
+# Démarrer l'application
+Write-Host "🚀 Lancement de Tech4Elles..." -ForegroundColor Green
+Write-Host "📋 URLs disponibles:" -ForegroundColor Cyan
+Write-Host "  - API Backend: http://localhost:3333" -ForegroundColor White
+Write-Host "  - App Utilisateur: http://localhost:3000" -ForegroundColor White
+Write-Host "  - App Admin: http://localhost:3001" -ForegroundColor White
+Write-Host "  - Base de données: localhost:5435" -ForegroundColor White
+Write-Host ""
+
+# Démarrer avec pnpm
+try {
+    pnpm dev
+} catch {
+    Write-Host "❌ Erreur lors du démarrage avec pnpm" -ForegroundColor Red
+    Write-Host "💡 Tentative avec npm..." -ForegroundColor Yellow
+
+    try {
+        npm run dev
+    } catch {
+        Write-Host "❌ Erreur lors du démarrage avec npm" -ForegroundColor Red
+        Write-Host "💡 Vérifiez que le script 'dev' existe dans package.json" -ForegroundColor Yellow
+        exit 1
+    }
+}

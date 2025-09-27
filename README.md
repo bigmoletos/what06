@@ -90,7 +90,7 @@ pnpm dev
 ## 🔐 **Accès Admin**
 
 ```
-Email: pro@alopez.fr
+Email: admin@yopmail.com
 Mot de passe: *****
 ```
 
